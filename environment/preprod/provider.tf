@@ -2,9 +2,15 @@ terraform {
   required_version = ">=1.0.0"
   required_providers {
     azurerm = {
-        source = "hashicorp/azurerm"
-        version = ">=4.0.0"
+      source  = "hashicorp/azurerm"
+      version = ">=4.0.0"
     }
+  }
+  backend "azurerm" {
+    resource_group_name  = "Empire_Operation_rg"
+    storage_account_name = "empireoperationstg"
+    container_name       = "empirecontainer"
+    key                  = "empo.tfstate"
   }
 }
 
