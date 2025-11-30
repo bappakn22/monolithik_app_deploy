@@ -15,7 +15,7 @@ stages:
          inputs:
            provider: 'azurerm'
            command: 'init'
-           workingDirectory: '$(System.DefaultWorkingDirectory)/environment /preprod'
+           workingDirectory: '$(System.DefaultWorkingDirectory)/environment/preprod'
            backendServiceArm: 'Empire_Operations_Agent_SC'
            backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
            backendAzureRmResourceGroupName: 'Empire_Operation_rg'
