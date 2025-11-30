@@ -31,12 +31,32 @@ stages:
            backendAzureRmKey: 'empoyaml.tfstate'
 
        - task: TerraformTask@5
+         displayName: terraform validation
+         inputs:
+           provider: 'azurerm'
+           command: 'validate'
+           workingDirectory: '$(WORK_DIR)'
+
+       - task: TerraformTask@5
          displayName: terraform plan
          inputs:
             provider: 'azurerm'
             command: 'plan'
             workingDirectory: '$(WORK_DIR)'
             environmentServiceNameAzureRM: $(SER_CONN)
+
+ - stage: terraformscan
+   jobs:
+     - job: tfscan
+       steps:
+       - task: TerraformTask@5
+         inputs:
+           provider: 'azurerm'
+           command: 'custom'
+           workingDirectory: '$(WORK_DIR)'
+           outputTo: 'console'
+           customCommand: 'tflint'
+           environmentServiceNameAzureRM: $(SER_CONN)
 
 
 
