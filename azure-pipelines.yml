@@ -1,9 +1,15 @@
 name: infra_monolithik
+
 trigger: none
 # - main
 
 pool: Empire_Operations_Agent
   # vmImage: ubuntu-latest
+  
+variables:
+  WORK_DIR: '$(System.DefaultWorkingDirectory)/environment/preprod'
+  SER_CONN: 'Empire_Operations_Agent_SC'
+
 
 stages:
  - stage: terraforminit
@@ -12,18 +18,25 @@ stages:
      - job: terraforminitjob
        steps:
        - task: TerraformTask@5
+         displayName: terraform init
          inputs:
            provider: 'azurerm'
            command: 'init'
-           workingDirectory: '$(System.DefaultWorkingDirectory)/environment/preprod'
-           backendServiceArm: 'Empire_Operations_Agent_SC'
+           workingDirectory: $(WORK_DIR)
+           backendServiceArm: $(SER_CONN)
            backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
            backendAzureRmResourceGroupName: 'Empire_Operation_rg'
            backendAzureRmStorageAccountName: 'empireoperationstg'
            backendAzureRmContainerName: 'empirecontainer'
            backendAzureRmKey: 'empoyaml.tfstate'
 
-
+       - task: TerraformTask@5
+         displayName: terraform plan
+         inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(WORK_DIR)'
+            environmentServiceNameAzureRM: $(SER_CONN)
 
 
 
