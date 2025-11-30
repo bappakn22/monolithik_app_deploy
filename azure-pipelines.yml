@@ -54,9 +54,9 @@ stages:
            provider: 'azurerm'
            command: 'custom'
            workingDirectory: '$(WORK_DIR)'
+           commandOptions: 'tflint'
            outputTo: 'console'
-           customCommand: 'tflint'
-           environmentServiceNameAzureRM: $(SER_CONN)
+           environmentServiceNameAzureRM: '$(SER_CONN)'
 
 
 
