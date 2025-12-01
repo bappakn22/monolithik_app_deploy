@@ -58,19 +58,7 @@ stages:
       #      outputTo: 'console'
       #      environmentServiceNameAzureRM: '$(SER_CONN)'
 
-        - task: TerraformTask@5
-          displayName: terraform initialize
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(WORK_DIR)'
-            backendServiceArm: '$(SER_CONN)'
-            backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
-            backendAzureRmResourceGroupName: 'Empire_Operation_rg'
-            backendAzureRmStorageAccountName: 'empireoperationstg'
-            backendAzureRmContainerName: 'empirecontainer'
-            backendAzureRmKey: 'empoyaml.tfstate'
-
+         - template: 'template.yaml'
         
 
 
