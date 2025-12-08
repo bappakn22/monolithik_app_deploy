@@ -1,14 +1,15 @@
-variable "rgs" {
-  description = "all rg groups"
+variable "prodrgs" {
+  description = "all rgs"
   type = map(object({
     rg_name    = string
     location   = string
     managed_by = string
     tags       = map(string)
+
   }))
 }
 
-variable "storage" {
+variable "prodstg_details" {
   description = "storage account details"
   type = map(object({
     storage_name             = string
@@ -17,5 +18,4 @@ variable "storage" {
     account_tier             = string
     account_replication_type = string
   }))
-
 }
