@@ -49,20 +49,20 @@ stages:
             workingDirectory: '$(WORK_DIR)'
             environmentServiceNameAzureRM: $(SER_CONN)
 
-#  - stage: terraformscan
-#    jobs:
-#      - job: tfscan
-#        steps:
-#       #  - task: TerraformTask@5
-#       #    inputs:
-#       #      provider: 'azurerm'
-#       #      command: 'custom'
-#       #      workingDirectory: '$(WORK_DIR)'
-#       #      commandOptions: 'tflint'
-#       #      outputTo: 'console'
-#       #      environmentServiceNameAzureRM: '$(SER_CONN)'
+ - stage: terraformscan
+   jobs:
+     - job: tfscan
+       steps:
+      #  - task: TerraformTask@5
+      #    inputs:
+      #      provider: 'azurerm'
+      #      command: 'custom'
+      #      workingDirectory: '$(WORK_DIR)'
+      #      commandOptions: 'tflint'
+      #      outputTo: 'console'
+      #      environmentServiceNameAzureRM: '$(SER_CONN)'
 
-#          - template: 'template.yaml'
+         - template: 'template.yaml'
         
 
 
