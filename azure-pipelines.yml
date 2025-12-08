@@ -7,9 +7,17 @@ pool: Empire_Operations_Agent
   # vmImage: ubuntu-latest
   
 variables:
-  WORK_DIR: '$(System.DefaultWorkingDirectory)/environment/preprod'
+  WORK_DIR: '$(System.DefaultWorkingDirectory)/environment'
   SER_CONN: 'Empire_Operations_Agent_SC'
 
+parameters:
+  - name: environment
+    displayName: details of env 
+    type: string
+    default: preprod
+    values: 
+      - preprod
+      - prod
 
 stages:
  - stage: terraforminit
@@ -26,7 +34,7 @@ stages:
       #    inputs:
       #      provider: 'azurerm'
       #      command: 'init'
-      #      workingDirectory: $(WORK_DIR)
+      #      workingDirectory: $(WORK_DIR)/{{ parameters.environment }}
       #      backendServiceArm: $(SER_CONN)
       #      backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
       #      backendAzureRmResourceGroupName: 'Empire_Operation_rg'
@@ -49,20 +57,20 @@ stages:
             workingDirectory: '$(WORK_DIR)'
             environmentServiceNameAzureRM: $(SER_CONN)
 
- - stage: terraformscan
-   jobs:
-     - job: tfscan
-       steps:
-      #  - task: TerraformTask@5
-      #    inputs:
-      #      provider: 'azurerm'
-      #      command: 'custom'
-      #      workingDirectory: '$(WORK_DIR)'
-      #      commandOptions: 'tflint'
-      #      outputTo: 'console'
-      #      environmentServiceNameAzureRM: '$(SER_CONN)'
+#  - stage: terraformscan
+#    jobs:
+#      - job: tfscan
+#        steps:
+#       #  - task: TerraformTask@5
+#       #    inputs:
+#       #      provider: 'azurerm'
+#       #      command: 'custom'
+#       #      workingDirectory: '$(WORK_DIR)'
+#       #      commandOptions: 'tflint'
+#       #      outputTo: 'console'
+#       #      environmentServiceNameAzureRM: '$(SER_CONN)'
 
-         - template: 'template.yaml'
+#          - template: 'template.yaml'
         
 
 
