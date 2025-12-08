@@ -62,22 +62,20 @@ stages:
                            echo 'tfvars copy and pest'
                            cp "$(tfvarsFiles.secureFilePath)" "$(System.DefaultWorkingDirectory)/environment/preprod"
 
-       
-     
-
+         
        - task: TerraformTask@5
          displayName: terraform validation
          inputs:
            provider: 'azurerm'
            command: 'validate'
-           workingDirectory: '$(WORK_DIR)'
+           workingDirectory: '$(WORK_DIR)/${{ parameters.environment }}'
 
        - task: TerraformTask@5
          displayName: terraform plan
          inputs:
             provider: 'azurerm'
             command: 'plan'
-            workingDirectory: '$(WORK_DIR)'
+            workingDirectory: '$(WORK_DIR)/${{ parameters.environment }}'
             environmentServiceNameAzureRM: $(SER_CONN)
 
 #  - stage: terraformscan
