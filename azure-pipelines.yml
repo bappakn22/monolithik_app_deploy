@@ -23,10 +23,31 @@ stages:
  - stage: terraforminit
    displayName: terraform initialize
    jobs:
+     - job: tfvarsDownload
+       steps:
+       - task: DownloadSecureFile@1
+         name: tfvarsFiles
+         displayName: download tfvars
+         inputs:
+           secureFile: 'terraform.tfvars'
+
+              
+       - task: TerraformInstaller@1
+         displayName: terrafom install
+         inputs:
+           terraformVersion: 'latest'
+
      - job: terraforminitjob
        steps:
        - template: template.yaml
 
+       - task: Bash@3
+         inputs:
+           targetType: 'inline'
+           script: |
+             # Write your commands here
+                           echo 'tfvars copy and pest'
+                           cp "$(tfvarsFiles.secureFilePath)" "$(System.DefaultWorkingDirectory)/environment/preprod"
 
        
       #  - task: TerraformTask@5
