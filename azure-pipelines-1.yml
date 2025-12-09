@@ -60,14 +60,21 @@ stages:
               cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.myenv }}"
 
         - task: TerraformTask@5
+          displayName: validation
           inputs:
             provider: 'azurerm'
             command: 'validate'
             workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
 
         - task: TerraformTask@5
+          displayName: plan
           inputs:
             provider: 'azurerm'
             command: 'plan'
             workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
-            environmentServiceNameAzureRM: $(SER_CONN)
+            commandOptions: '-var-file=terraform-${{ parameters.myenv }}.tfvars'
+            environmentServiceNameAzureRM: '$(SER_CONN)'
+
+
+
+
