@@ -19,13 +19,13 @@ parameters:
     - preprod
     - prod
     
-
 stages:
   - stage: terraformInstall
     jobs:
       - job: installTerraform
         steps:
         - task: TerraformInstaller@1
+          displayName: terraform tool
           inputs:
             terraformVersion: 'latest'
         
@@ -41,4 +41,32 @@ stages:
             backendAzureRmStorageAccountName: 'empireoperationstg'
             backendAzureRmContainerName: 'empirecontainer'
             backendAzureRmKey: 'empoyaml.tfstate'
+        - task: DownloadSecureFile@1
+          displayName: tfvars download
+          name: tfvars
+          inputs:
+            secureFile: 'terraform.tfvars'
         
+        - task: Bash@3
+          displayName: copy tfvars file
+          inputs:
+            targetType: 'inline'
+            script: |
+              # Write your commands here
+              
+              echo 'copy tfvars file'
+              
+              cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/preprod"
+
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
+
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
+            environmentServiceNameAzureRM: $(SER_CONN)
