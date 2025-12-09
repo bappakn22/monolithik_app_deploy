@@ -10,6 +10,15 @@ variables:
   WORK_DIR: '$(System.DefaultWorkingDirectory)/environment'
   SER_CONN: 'Empire_Operations_Agent_SC'
 
+parameters:
+- name: myenv
+  displayName: parameters
+  type: string
+  default: prod
+  values: 
+    - preprod
+    - prod
+    
 
 
 stages:
@@ -21,5 +30,5 @@ stages:
           inputs:
             terraformVersion: 'latest'
         
-        - template: template.yaml
+        - template: templateterraform.yaml
         
