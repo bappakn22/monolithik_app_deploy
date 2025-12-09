@@ -3,77 +3,111 @@ name: infra_monolithic_terraform
 trigger: none
 # - main
 
-pool: Empire_Operations_Agent
+pool: 
+ name: Empire_Operations_Agent
+ demands:
+    - Agent.Name -equals Empire_Agent
+
+
   # vmImage: ubuntu-latest
-
+#  
 variables:
-  WORK_DIR: '$(System.DefaultWorkingDirectory)/environment'
-  SER_CONN: 'Empire_Operations_Agent_SC'
+  - name: WORK_DIR
+    value: '$(System.DefaultWorkingDirectory)/environment'
+  - name: SER_CONN
+    value: 'Empire_Operations_Agent_SC'
+  - group: kv_group
 
-parameters:
-- name: myenv
-  displayName: parameters
-  type: string
-  default: preprod
-  values: 
-    - preprod
-    - prod
+
+
+steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your PowerShell commands here.
+      
+      Write-Host "Hello World"
+      az login --service-principal -u $(clientid) -p $(clientsecret) --tenant $(tenantid)
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'az group create --location eastus --name pwsh_rg'
+
+
+
+
+
+
+
+
+
+
+# parameters:
+# - name: myenv
+#   displayName: parameters
+#   type: string
+#   default: preprod
+#   values: 
+#     - preprod
+#     - prod
     
-stages:
-  - stage: terraformInstall
-    jobs:
-      - job: installTerraform
-        steps:
-        - task: TerraformInstaller@1
-          displayName: terraform tool
-          inputs:
-            terraformVersion: 'latest'
+# stages:
+#   - stage: terraformInstall
+#     jobs:
+#       - job: installTerraform
+#         steps:
+#         - task: TerraformInstaller@1
+#           displayName: terraform tool
+#           inputs:
+#             terraformVersion: 'latest'
         
-        - task: TerraformTask@5
-          displayName: terraform init
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: $(WORK_DIR)/${{ parameters.myenv }}
-            backendServiceArm: $(SER_CONN)
-            backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
-            backendAzureRmResourceGroupName: 'Empire_Operation_rg'
-            backendAzureRmStorageAccountName: 'empireoperationstg'
-            backendAzureRmContainerName: 'empirecontainer'
-            backendAzureRmKey: 'empoyaml.tfstate'
-        - task: DownloadSecureFile@1
-          displayName: tfvars download
-          name: tfvars
-          inputs:
-            secureFile: 'terraform-${{ parameters.myenv }}.tfvars'
+#         - task: TerraformTask@5
+#           displayName: terraform init
+#           inputs:
+#             provider: 'azurerm'
+#             command: 'init'
+#             workingDirectory: $(WORK_DIR)/${{ parameters.myenv }}
+#             backendServiceArm: $(SER_CONN)
+#             backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
+#             backendAzureRmResourceGroupName: 'Empire_Operation_rg'
+#             backendAzureRmStorageAccountName: 'empireoperationstg'
+#             backendAzureRmContainerName: 'empirecontainer'
+#             backendAzureRmKey: 'empoyaml.tfstate'
+#         - task: DownloadSecureFile@1
+#           displayName: tfvars download
+#           name: tfvars
+#           inputs:
+#             secureFile: 'terraform-${{ parameters.myenv }}.tfvars'
         
-        - task: Bash@3
-          displayName: copy tfvars file
-          inputs:
-            targetType: 'inline'
-            script: |
-              # Write your commands here
+#         - task: Bash@3
+#           displayName: copy tfvars file
+#           inputs:
+#             targetType: 'inline'
+#             script: |
+#               # Write your commands here
               
-              echo 'copy tfvars file'
+#               echo 'copy tfvars file'
               
-              # cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.myenv }}/terraform.tfvars"
-              cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.myenv }}"
+#               # cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.myenv }}/terraform.tfvars"
+#               cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.myenv }}"
 
-        - task: TerraformTask@5
-          displayName: validation
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
+#         - task: TerraformTask@5
+#           displayName: validation
+#           inputs:
+#             provider: 'azurerm'
+#             command: 'validate'
+#             workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
 
-        - task: TerraformTask@5
-          displayName: plan
-          inputs:
-            provider: 'azurerm'
-            command: 'plan'
-            workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
-            commandOptions: '-var-file=terraform-${{ parameters.myenv }}.tfvars'
-            environmentServiceNameAzureRM: '$(SER_CONN)'
+#         - task: TerraformTask@5
+#           displayName: plan
+#           inputs:
+#             provider: 'azurerm'
+#             command: 'plan'
+#             workingDirectory: '$(WORK_DIR)/${{ parameters.myenv }}'
+#             commandOptions: '-var-file=terraform-${{ parameters.myenv }}.tfvars'
+#             environmentServiceNameAzureRM: '$(SER_CONN)'
 
 
 
