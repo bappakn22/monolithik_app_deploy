@@ -6,6 +6,12 @@ trigger: none
 pool: Empire_Operations_Agent
   # vmImage: ubuntu-latest
 
+variables:
+  WORK_DIR: '$(System.DefaultWorkingDirectory)/environment'
+  SER_CONN: 'Empire_Operations_Agent_SC'
+
+
+
 stages:
   - stage: terraformInstall
     jobs:
