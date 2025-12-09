@@ -47,16 +47,16 @@ stages:
           inputs:
             secureFile: 'terraform.tfvars'
         
-        - task: Bash@3
-          displayName: copy tfvars file
-          inputs:
-            targetType: 'inline'
-            script: |
-              # Write your commands here
+        # - task: Bash@3
+        #   displayName: copy tfvars file
+        #   inputs:
+        #     targetType: 'inline'
+        #     script: |
+        #       # Write your commands here
               
-              echo 'copy tfvars file'
+        #       echo 'copy tfvars file'
               
-              cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/preprod"
+        #       cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/preprod"
 
         - task: TerraformTask@5
           inputs:
