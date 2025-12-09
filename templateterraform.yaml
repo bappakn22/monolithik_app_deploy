@@ -10,4 +10,4 @@ steps:
        backendAzureRmResourceGroupName: 'Empire_Operation_rg'
        backendAzureRmStorageAccountName: 'empireoperationstg'
        backendAzureRmContainerName: 'empirecontainer'
-       backendAzureRmKey: 'empoyaml.tfstate'
+       backendAzureRmKey: 'terrainfra.tfstate'
