@@ -1,0 +1,19 @@
+name: infra_monolithic_terraform
+
+trigger: none
+# - main
+
+pool: Empire_Operations_Agent
+  # vmImage: ubuntu-latest
+
+stages:
+  - stage: terraformInstall
+    jobs:
+      - job: installTerraform
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        
+        - template: template.yaml
+        
