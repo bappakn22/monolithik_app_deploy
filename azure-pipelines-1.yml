@@ -56,7 +56,7 @@ stages:
               
               echo 'copy tfvars file'
               
-              cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.myenv }}"
+              cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.myenv }}/terraform.tfvars"
 
         - task: TerraformTask@5
           inputs:
