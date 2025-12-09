@@ -14,7 +14,7 @@ parameters:
 - name: myenv
   displayName: parameters
   type: string
-  default: prod
+  default: preprod
   values: 
     - preprod
     - prod
