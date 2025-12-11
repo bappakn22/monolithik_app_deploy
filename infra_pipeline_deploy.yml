@@ -55,11 +55,13 @@ stages:
 
         
         - task: PowerShell@2
+          displayName: copy file
           inputs:
             targetType: 'inline'
             script: cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
 
         - task: TerraformTask@5
+          displayName: plan
           inputs:
             provider: 'azurerm'
             command: 'plan'
@@ -72,6 +74,19 @@ stages:
      - job: tfscan
        steps:
        - task: tfsec@1
+         displayName: tfscanning
          inputs:
            version: 'v1.26.0'
            dir: '$(WORK_DIR)'
+
+       - task: PowerShell@2
+         displayName: checkov scanning
+         inputs:
+           targetType: 'inline'
+           script: 'checkov -d $(System.DefaultWorkingDirectory) -o junitxml > checkov-scan.xml'
+
+       - task: PublishTestResults@2
+         inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'checkov-scan.xml'
+          testRunTitle: 'checkovscan'
