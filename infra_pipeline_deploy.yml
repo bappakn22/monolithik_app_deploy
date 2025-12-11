@@ -11,7 +11,7 @@ variables:
 
 parameters:
   - name: infraenv
-    displayName: envi
+    displayName: environment
     type: string
     default: preprod
     values:
