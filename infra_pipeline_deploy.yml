@@ -27,19 +27,28 @@ stages:
    jobs:
      - job: terraforminit
        steps:
-          - task: TerraformTask@5
-            displayName: terraform init
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              workingDirectory: $(WORK_DIR)/${{ parameters.infraenv }}
-              backendServiceArm: $(SER_CONN)
-              backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
-              backendAzureRmResourceGroupName: 'Empire_Operation_rg'
-              backendAzureRmStorageAccountName: 'empireoperationstg'
-              backendAzureRmContainerName: 'empirecontainer'
-              backendAzureRmKey: 'infradep.tfstate'
+        - task: TerraformTask@5
+          displayName: terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: $(WORK_DIR)/${{ parameters.infraenv }}
+            backendServiceArm: $(SER_CONN)
+            backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
+            backendAzureRmResourceGroupName: 'Empire_Operation_rg'
+            backendAzureRmStorageAccountName: 'empireoperationstg'
+            backendAzureRmContainerName: 'empirecontainer'
+            backendAzureRmKey: 'infradev.tfstate'
 
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-
+        - task: DownloadSecureFile@1
+          displayName: tfvars download
+          name: tfvarsdownload
+          inputs:
+            secureFile: 'terraform-${{ parameters.infraenv }}.tfvars'
 
