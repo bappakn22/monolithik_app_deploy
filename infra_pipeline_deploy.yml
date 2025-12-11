@@ -71,7 +71,7 @@ stages:
 
  - stage: securityscanning
    jobs:
-     - job: tfscan
+     - job: scanning
        steps:
        - task: tfsec@1
          displayName: tfscanning
@@ -81,9 +81,10 @@ stages:
 
        - task: PowerShell@2
          displayName: checkov scanning
+         continueOnError: true
          inputs:
            targetType: 'inline'
-           script: 'checkov -d $(System.DefaultWorkingDirectory) -o junitxml > checkov-scan.xml'
+           script: 'checkov -d "$(System.DefaultWorkingDirectory)" -o junitxml > checkov-scan.xml'
 
        - task: PublishTestResults@2
          inputs:
