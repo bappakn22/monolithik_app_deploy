@@ -53,10 +53,9 @@ stages:
           inputs:
             secureFile: 'terraform-${{ parameters.infraenv }}.tfvars'
 
-        - task: Bash@3
-          displayName: copy tfvars file
+        
+        - task: PowerShell@2
           inputs:
             targetType: 'inline'
-            script: 
-              cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
+            script: cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
 
