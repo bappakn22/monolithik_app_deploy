@@ -57,5 +57,6 @@ stages:
           displayName: copy tfvars file
           inputs:
             targetType: 'inline'
-            script: cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
+            script: 
+              cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
 
