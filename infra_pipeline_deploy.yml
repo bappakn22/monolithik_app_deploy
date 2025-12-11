@@ -41,6 +41,7 @@ stages:
             backendAzureRmKey: 'infradev.tfstate'
 
         - task: TerraformTask@5
+          displayName: validation
           inputs:
             provider: 'azurerm'
             command: 'validate'
@@ -48,7 +49,13 @@ stages:
 
         - task: DownloadSecureFile@1
           displayName: tfvars download
-          name: tfvarsdownload
+          name: tfvars
           inputs:
             secureFile: 'terraform-${{ parameters.infraenv }}.tfvars'
+
+        - task: Bash@3
+          displayName: copy tfvars file
+          inputs:
+            targetType: 'inline'
+            script: cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
 
