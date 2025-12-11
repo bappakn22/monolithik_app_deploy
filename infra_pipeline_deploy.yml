@@ -97,3 +97,11 @@ stages:
          inputs:
            targetType: 'inline'
            script: 'tflint.exe --chdir="$(System.DefaultWorkingDirectory)" --recursive -f junit > tflintscan.xml'
+
+       - task: PublishTestResults@2
+         displayName: resultpublish
+         continueOnError: true
+         inputs:
+           testResultsFormat: 'JUnit'
+           testResultsFiles: 'tflintscan.xml'
+           testRunTitle: 'tflintscan'
