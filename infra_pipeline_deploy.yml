@@ -92,12 +92,9 @@ stages:
           testResultsFiles: 'checkov-scan.xml'
           testRunTitle: 'checkovscan'
 
-       - task: PowerShell@2
-         displayName: tflintscanning
-         continueOnError: true
+       - task: CmdLine@2
          inputs:
-           targetType: 'inline'
-           script: 'tflint --chdir="$(System.DefaultWorkingDirectory)" --recursive -f junit > tflintscan.xml'
+            script: 'tflint --chdir="$(System.DefaultWorkingDirectory)" --recursive -f junit > tflintscan.xml'
 
        - task: PublishTestResults@2
          displayName: resultpublish
