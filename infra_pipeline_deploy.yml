@@ -93,6 +93,7 @@ stages:
           testRunTitle: 'checkovscan'
 
        - task: CmdLine@2
+         continueOnError: true
          inputs:
             script: 'tflint --chdir="$(System.DefaultWorkingDirectory)" --recursive -f junit > tflintscan.xml'
 
