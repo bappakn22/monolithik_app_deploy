@@ -93,6 +93,7 @@ stages:
           testRunTitle: 'checkovscan'
 
        - task: CmdLine@2
+         displayName: tflint scan
          continueOnError: true
          inputs:
             script: 'tflint --chdir="$(System.DefaultWorkingDirectory)" --recursive -f junit > tflintscan.xml'
@@ -105,12 +106,14 @@ stages:
            testRunTitle: 'tflintscan'
 
        - task: PowerShell@2
+         displayName: terrascan
          continueOnError: true
          inputs:
             targetType: 'inline'
             script: 'terrascan scan -d "$(System.DefaultWorkingDirectory)" -o junit-xml > terrscanresult.xml'
 
        - task: PublishTestResults@2
+         displayName: ter-result-publish
          inputs:
             testResultsFormat: 'JUnit'
             testResultsFiles: 'terrscanresult.xml'
