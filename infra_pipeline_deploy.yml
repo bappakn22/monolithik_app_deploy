@@ -104,4 +104,14 @@ stages:
            testResultsFiles: 'tflintscan.xml'
            testRunTitle: 'tflintscan'
 
-        
+       - task: PowerShell@2
+         continueOnError: true
+         inputs:
+            targetType: 'inline'
+            script: 'terrascan scan -d "$(System.DefaultWorkingDirectory)" -o junit-xml > terrscanresult.xml'
+
+       - task: PublishTestResults@2
+         inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: 'terrscanresult.xml'
+            testRunTitle: 'terscan'
