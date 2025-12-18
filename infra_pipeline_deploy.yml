@@ -9,14 +9,14 @@ variables:
     value: 'Empire_Operations_Agent_SC'
     
 
-parameters:
-  - name: infraenv
-    displayName: environment
-    type: string
-    default: preprod
-    values:
-      - preprod
-      - prod
+# parameters:
+#   - name: infraenv
+#     displayName: environment
+#     type: string
+#     default: preprod
+#     values:
+#       - preprod
+#       - prod
 
 pool: 
  name: Empire_Operations_Agent
