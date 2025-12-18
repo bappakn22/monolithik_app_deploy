@@ -23,51 +23,51 @@ pool:
 
 
 stages:
- - stage: terraforminit
-   jobs:
-     - job: terraforminit
-       steps:
-        - task: TerraformTask@5
-          displayName: terraform init
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: $(WORK_DIR)/${{ parameters.infraenv }}
-            backendServiceArm: $(SER_CONN)
-            backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
-            backendAzureRmResourceGroupName: 'Empire_Operation_rg'
-            backendAzureRmStorageAccountName: 'empireoperationstg'
-            backendAzureRmContainerName: 'empirecontainer'
-            backendAzureRmKey: 'infradev.tfstate'
+#  - stage: terraforminit
+#    jobs:
+#      - job: terraforminit
+#        steps:
+#         - task: TerraformTask@5
+#           displayName: terraform init
+#           inputs:
+#             provider: 'azurerm'
+#             command: 'init'
+#             workingDirectory: $(WORK_DIR)/${{ parameters.infraenv }}
+#             backendServiceArm: $(SER_CONN)
+#             backendAzureRmOverrideSubscriptionID: 'b4461466-1e6b-4be2-bb70-1e96a72a41c8'
+#             backendAzureRmResourceGroupName: 'Empire_Operation_rg'
+#             backendAzureRmStorageAccountName: 'empireoperationstg'
+#             backendAzureRmContainerName: 'empirecontainer'
+#             backendAzureRmKey: 'infradev.tfstate'
 
-        - task: TerraformTask@5
-          displayName: validation
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
+#         - task: TerraformTask@5
+#           displayName: validation
+#           inputs:
+#             provider: 'azurerm'
+#             command: 'validate'
+#             workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-        - task: DownloadSecureFile@1
-          displayName: tfvars download
-          name: tfvars
-          inputs:
-            secureFile: 'terraform-${{ parameters.infraenv }}.tfvars'
+#         - task: DownloadSecureFile@1
+#           displayName: tfvars download
+#           name: tfvars
+#           inputs:
+#             secureFile: 'terraform-${{ parameters.infraenv }}.tfvars'
 
         
-        - task: PowerShell@2
-          displayName: copy file
-          inputs:
-            targetType: 'inline'
-            script: cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
+#         - task: PowerShell@2
+#           displayName: copy file
+#           inputs:
+#             targetType: 'inline'
+#             script: cp "$(tfvars.secureFilePath)" "$(WORK_DIR)/${{ parameters.infraenv }}"
 
-        - task: TerraformTask@5
-          displayName: plan
-          inputs:
-            provider: 'azurerm'
-            command: 'plan'
-            workingDirectory: '$(WORK_DIR)/${{ parameters.infraenv }}'
-            commandOptions: '-var-file=terraform-${{ parameters.infraenv }}.tfvars'
-            environmentServiceNameAzureRM: 'Empire_Operations_Agent_SC'
+#         - task: TerraformTask@5
+#           displayName: plan
+#           inputs:
+#             provider: 'azurerm'
+#             command: 'plan'
+#             workingDirectory: '$(WORK_DIR)/${{ parameters.infraenv }}'
+#             commandOptions: '-var-file=terraform-${{ parameters.infraenv }}.tfvars'
+#             environmentServiceNameAzureRM: 'Empire_Operations_Agent_SC'
 
  - stage: securityscanning
    jobs:
@@ -79,55 +79,55 @@ stages:
            version: 'v1.26.0'
            dir: '$(System.DefaultWorkingDirectory)'
 
-       - task: PowerShell@2
-         displayName: checkov scanning
-         continueOnError: true
-         inputs:
-           targetType: 'inline'
-           script: 'checkov -d "$(System.DefaultWorkingDirectory)" -o junitxml > checkov-scan.xml'
+#        - task: PowerShell@2
+#          displayName: checkov scanning
+#          continueOnError: true
+#          inputs:
+#            targetType: 'inline'
+#            script: 'checkov -d "$(System.DefaultWorkingDirectory)" -o junitxml > checkov-scan.xml'
 
-       - task: PublishTestResults@2
-         inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'checkov-scan.xml'
-          testRunTitle: 'checkovscan'
+#        - task: PublishTestResults@2
+#          inputs:
+#           testResultsFormat: 'JUnit'
+#           testResultsFiles: 'checkov-scan.xml'
+#           testRunTitle: 'checkovscan'
 
-       - task: CmdLine@2
-         displayName: tflint scan
-         continueOnError: true
-         inputs:
-            script: 'tflint --chdir="$(System.DefaultWorkingDirectory)" --recursive -f junit > tflintscan.xml'
+#        - task: CmdLine@2
+#          displayName: tflint scan
+#          continueOnError: true
+#          inputs:
+#             script: 'tflint --chdir="$(System.DefaultWorkingDirectory)" --recursive -f junit > tflintscan.xml'
 
-       - task: PublishTestResults@2
-         displayName: resultpublish
-         inputs:
-           testResultsFormat: 'JUnit'
-           testResultsFiles: 'tflintscan.xml'
-           testRunTitle: 'tflintscan'
+#        - task: PublishTestResults@2
+#          displayName: resultpublish
+#          inputs:
+#            testResultsFormat: 'JUnit'
+#            testResultsFiles: 'tflintscan.xml'
+#            testRunTitle: 'tflintscan'
 
-       - task: PowerShell@2
-         displayName: terrascan
-         continueOnError: true
-         inputs:
-            targetType: 'inline'
-            script: 'terrascan scan -d "$(System.DefaultWorkingDirectory)" -o junit-xml > terrscanresult.xml'
+#        - task: PowerShell@2
+#          displayName: terrascan
+#          continueOnError: true
+#          inputs:
+#             targetType: 'inline'
+#             script: 'terrascan scan -d "$(System.DefaultWorkingDirectory)" -o junit-xml > terrscanresult.xml'
 
-       - task: PublishTestResults@2
-         displayName: ter-result-publish
-         inputs:
-            testResultsFormat: 'JUnit'
-            testResultsFiles: 'terrscanresult.xml'
-            testRunTitle: 'terscan'
+#        - task: PublishTestResults@2
+#          displayName: ter-result-publish
+#          inputs:
+#             testResultsFormat: 'JUnit'
+#             testResultsFiles: 'terrscanresult.xml'
+#             testRunTitle: 'terscan'
 
- - stage: infracost
-   displayName: cost scanning
-   jobs:
-     - job: costjob
-       steps:
-         - task: PowerShell@2
-           displayName: precost scanning
-           inputs:
-             targetType: 'inline'
-             script: 'infracost breakdown --path $(System.DefaultWorkingDirectory)'
+#  - stage: infracost
+#    displayName: cost scanning
+#    jobs:
+#      - job: costjob
+#        steps:
+#          - task: PowerShell@2
+#            displayName: precost scanning
+#            inputs:
+#              targetType: 'inline'
+#              script: 'infracost breakdown --path $(System.DefaultWorkingDirectory)'
 
            
