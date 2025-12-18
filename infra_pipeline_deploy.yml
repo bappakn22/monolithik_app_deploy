@@ -120,10 +120,12 @@ stages:
             testRunTitle: 'terscan'
 
  - stage: infracost
+   displayName: cost scanning
    jobs:
      - job: costjob
        steps:
          - task: PowerShell@2
+           displayName: precost scanning
            inputs:
              targetType: 'inline'
              script: 'infracost breakdown --path $(System.DefaultWorkingDirectory)'
